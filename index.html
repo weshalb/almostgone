@@ -1,33 +1,21 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menú con Cursor Elástico</title>
+  <title>Almost Gone</title>
   <style>
     :root {
-      --background-color-light: hsla(230, 80%, 98%, 1);
-      --toggle-light: hsla(230, 25%, 10%, 1);
-      --line-light: hsla(230, 35%, 92.5%, 1);
-      --dot-light: hsla(230, 25%, 75%, 1);
-      --text-top-light: hsla(240, 25%, 10%, 1);
-      --text-bottom-light: hsla(240, 25%, 25%, 1);
-      --text-circle-light: hsla(240, 25%, 25%, 1);
-      --background-color-dark: hsla(230, 55%, 4%, 1);
-      --toggle-dark: hsla(230, 25%, 75%, 1);
-      --line-dark: hsla(230, 25%, 15%, .75);
-      --dot-dark: hsla(230, 25%, 90%, 1);
-      --text-top-dark: hsla(240, 60%, 90%, 1);
-      --text-bottom-dark: hsla(240, 60%, 95%, 1);
-      --text-circle-dark: hsla(240, 60%, 95%, .15);
-      color-scheme: light;
-      --background-color: var(--background-color-light);
-      --toggle-color: var(--toggle-light);
-      --line-color: var(--line-light);
-      --dot-color: var(--dot-light);
-    }
+      /* Dark first (inverted from original) */
+      --background-color-dark: #0d0d0d;
+      --toggle-dark: #fff;
+      --line-dark: rgba(255,255,255,0.1);
+      --dot-dark: #fff;
+      --background-color-light: #f9f9f9;
+      --toggle-light: #111;
+      --line-light: rgba(0,0,0,0.1);
+      --dot-light: #000;
 
-    html.dark {
       color-scheme: dark;
       --background-color: var(--background-color-dark);
       --toggle-color: var(--toggle-dark);
@@ -35,101 +23,99 @@
       --dot-color: var(--dot-dark);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
+    html.light {
+      color-scheme: light;
+      --background-color: var(--background-color-light);
+      --toggle-color: var(--toggle-light);
+      --line-color: var(--line-light);
+      --dot-color: var(--dot-light);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
 
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--background-color);
-      color: var(--toggle-color);
-      cursor: none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background-color:var(--background-color);
+      color:var(--toggle-color);
+      cursor:none;
       font-family: Inter, sans-serif;
-      position: relative;
-      overflow: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      position:relative;
+      overflow:hidden;
+      transition:background-color 0.3s ease,color 0.3s ease;
     }
 
     .grid-frame {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      pointer-events: none;
-      z-index: 0;
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      pointer-events:none;
+      z-index:0;
     }
-
     .grid-frame::before,
     .grid-frame::after {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background-color: var(--line-color);
+      content:"";
+      position:absolute;
+      width:100%;
+      height:1px;
+      background-color:var(--line-color);
+    }
+    .grid-frame::before { top:30%; }
+    .grid-frame::after { bottom:30%; }
+    .grid-frame .vline { position:absolute; top:0; bottom:0; width:1px; background-color:var(--line-color);}
+    .grid-frame .vline.left { left:30%; }
+    .grid-frame .vline.right { right:30%; }
+
+    .dot {position:absolute; width:6px; height:6px; border-radius:50%; background-color:var(--dot-color); box-shadow:0 0 0 3px var(--background-color);}
+    .dot.tl{top:29.2%; left:29.65%;}
+    .dot.tr{top:29.2%; right:29.65%;}
+    .dot.bl{bottom:29.2%; left:29.65%;}
+    .dot.br{bottom:29.2%; right:29.65%;}
+
+    nav {display:flex; gap:2rem; position:relative; z-index:2;}
+
+    .nav-btn {
+      --btn-size:100px;
+      width:var(--btn-size);
+      height:var(--btn-size);
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      background:transparent;
+      font-size:0.9rem;
+      font-weight:600;
+      text-transform:uppercase;
+      cursor:pointer;
+      position:relative;
     }
 
-    .grid-frame::before { top: 30%; }
-    .grid-frame::after { bottom: 30%; }
-
-    .grid-frame .vline { position: absolute; top: 0; bottom: 0; width: 1px; background-color: var(--line-color); }
-    .grid-frame .vline.left { left: 30%; } 
-    .grid-frame .vline.right { right: 30%; }
-
-    .dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background-color: var(--dot-color); box-shadow: 0 0 0 3px var(--background-color); z-index: 1; }
-    .dot.tl { top: 29.2%; left: 29.65%; } 
-    .dot.tr { top: 29.2%; right: 29.65%; } 
-    .dot.bl { bottom: 29.2%; left: 29.65%; } 
-    .dot.br { bottom: 29.2%; right: 29.65%; }
-
-    nav { display: flex; gap: 2rem; position: relative; z-index: 2; }
-
-    .icon-btn {
-      --btn-size: 56px;
-      width: var(--btn-size);
-      height: var(--btn-size);
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: transparent;
-      box-shadow: none;
-      cursor: pointer;
-      position: relative;
+    .nav-btn span {
+      color:var(--toggle-color);
+      pointer-events:none;
+      transition:color .2s ease;
     }
 
-    .icon-btn svg {
-      width: 28px;
-      height: 28px;
-      stroke: var(--toggle-color);
-      transition: stroke .14s linear, transform .14s ease;
-    }
-
-    [data-sticky] { position: relative; }
-    [data-sticky] [data-sticky-area] { position: absolute; inset: 0; }
-    [data-sticky]:hover [data-sticky-area] { transform: scale(4); }
-
-    html.dark .icon-btn.is-bubbled svg,
-    html.dark .icon-btn.is-bubbled svg * {
-      stroke: #fff !important;
-      color: #fff !important;
-    }
-    html:not(.dark) .icon-btn.is-bubbled svg,
-    html:not(.dark) .icon-btn.is-bubbled svg * {
-      stroke: #000 !important;
-      color: #000 !important;
-    }
+    [data-sticky]{position:relative;}
+    [data-sticky] [data-sticky-area]{position:absolute; inset:0;}
+    [data-sticky]:hover [data-sticky-area]{transform:scale(4);}
 
     .bubble {
-      width: var(--bubble-size, 24px);
-      height: var(--bubble-size, 24px);
-      border-radius: 50%;
-      position: fixed;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      mix-blend-mode: difference;
-      pointer-events: none;
-      z-index: 9999;
+      width:24px; height:24px;
+      border-radius:50%;
+      position:fixed; top:0; left:0;
+      transform:translate(-50%,-50%);
+      background:#fff;
+      mix-blend-mode:difference;
+      pointer-events:none;
+      z-index:9999;
+    }
+
+    footer {
+      position:absolute; bottom:20px; width:100%; text-align:center;
+      font-size:0.8rem; color:var(--toggle-color);
     }
   </style>
 </head>
@@ -144,175 +130,76 @@
   </div>
 
   <nav>
-    <div class="icon-btn" data-sticky>
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 3v18l15-9z" stroke="currentColor"></path>
-      </svg>
-      <div data-sticky-area></div>
-    </div>
-
-    <div class="icon-btn" data-sticky>
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor"></path>
-        <polyline points="7 10 12 15 17 10" stroke="currentColor"></polyline>
-        <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor"></line>
-      </svg>
-      <div data-sticky-area></div>
-    </div>
-
-    <div class="icon-btn" data-sticky>
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="currentColor"></path>
-        <circle cx="12" cy="13" r="4" stroke="currentColor"></circle>
-      </svg>
-      <div data-sticky-area></div>
-    </div>
-
-    <div class="icon-btn" data-sticky>
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 18V5l12-2v13" stroke="currentColor"></path>
-        <circle cx="6" cy="18" r="3" stroke="currentColor"></circle>
-        <circle cx="18" cy="16" r="3" stroke="currentColor"></circle>
-      </svg>
-      <div data-sticky-area></div>
-    </div>
-
-    <div class="icon-btn" data-sticky>
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"></path>
-        <circle cx="12" cy="7" r="4" stroke="currentColor"></circle>
-      </svg>
-      <div data-sticky-area></div>
-    </div>
+    <div class="nav-btn" data-sticky><span>Home</span><div data-sticky-area></div></div>
+    <div class="nav-btn" data-sticky><span>About</span><div data-sticky-area></div></div>
+    <div class="nav-btn" data-sticky><span>Features</span><div data-sticky-area></div></div>
+    <div class="nav-btn" data-sticky><span>Contact</span><div data-sticky-area></div></div>
+    <div class="nav-btn" data-sticky><span>Join</span><div data-sticky-area></div></div>
   </nav>
 
   <div class="bubble"></div>
+  <footer>© 2025 Almost Gone — Aviation Music Collective</footer>
 
   <script type="module">
     import gsap from "https://esm.sh/gsap";
     import { vec2 } from "https://esm.sh/vecteur";
 
     class ElasticCursor {
-      constructor(el) {
-        this.node = el;
-        this.pos = {
-          prev: vec2(-100, -100),
-          now: vec2(-100, -100),
-          aim: vec2(-100, -100),
-          ease: 0.1
-        };
-        this.size = {
-          prev: 1,
-          now: 1,
-          aim: 1,
-          ease: 0.1
-        };
-        this.active = false;
-        this.target = null;
+      constructor(el){
+        this.node=el;
+        this.pos={prev:vec2(-100,-100),now:vec2(-100,-100),aim:vec2(-100,-100),ease:0.1};
+        this.size={prev:1,now:1,aim:1,ease:0.1};
+        this.active=false; this.target=null;
         this._bindEvents();
       }
-
-      _bindEvents() {
-        gsap.utils.toArray("[data-sticky]").forEach((el) => {
-          const area = el.querySelector("[data-sticky-area]");
-
-          area.addEventListener("pointerover", () => {
-            this.active = true;
-            this.target = area;
-            el.classList.add("is-bubbled");
+      _bindEvents(){
+        gsap.utils.toArray("[data-sticky]").forEach((el)=>{
+          const area=el.querySelector("[data-sticky-area]");
+          area.addEventListener("pointerover",()=>{this.active=true; this.target=area; el.classList.add("is-bubbled");});
+          area.addEventListener("pointerout",()=>{this.active=false; this.target=null; el.classList.remove("is-bubbled");});
+          const moveX=gsap.quickTo(el,"x",{duration:1,ease:"elastic.out(1,0.3)"});
+          const moveY=gsap.quickTo(el,"y",{duration:1,ease:"elastic.out(1,0.3)"});
+          el.addEventListener("pointermove",(ev)=>{
+            const {clientX,clientY}=ev;
+            const {width,height,left,top}=el.getBoundingClientRect();
+            const dx=clientX-(left+width/2);
+            const dy=clientY-(top+height/2);
+            moveX(dx*0.2); moveY(dy*0.2);
           });
-
-          area.addEventListener("pointerout", () => {
-            this.active = false;
-            this.target = null;
-            el.classList.remove("is-bubbled");
-          });
-
-          const moveX = gsap.quickTo(el, "x", { duration: 1, ease: "elastic.out(1, 0.3)" });
-          const moveY = gsap.quickTo(el, "y", { duration: 1, ease: "elastic.out(1, 0.3)" });
-
-          el.addEventListener("pointermove", (ev) => {
-            const { clientX, clientY } = ev;
-            const { width, height, left, top } = el.getBoundingClientRect();
-            const dx = clientX - (left + width / 2);
-            const dy = clientY - (top + height / 2);
-            moveX(dx * 0.2);
-            moveY(dy * 0.2);
-          });
-
-          el.addEventListener("pointerout", () => {
-            moveX(0);
-            moveY(0);
-          });
+          el.addEventListener("pointerout",()=>{moveX(0); moveY(0);});
         });
       }
-
-      moveTo(x, y) {
-        if (this.active && this.target) {
-          const rect = this.target.getBoundingClientRect();
-          const cx = rect.x + rect.width / 2;
-          const cy = rect.y + rect.height / 2;
-          const dx = x - cx;
-          const dy = y - cy;
-
-          this.pos.aim.x = cx + dx * 0.15;
-          this.pos.aim.y = cy + dy * 0.15;
-          this.size.aim = 2;
-
-          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-          const dist = Math.sqrt(dx * dx + dy * dy) * 0.01;
-          gsap.set(this.node, { rotate: angle });
-          gsap.to(this.node, {
-            scaleX: this.size.aim + Math.pow(Math.min(dist, 0.6), 3) * 3,
-            scaleY: this.size.aim - Math.pow(Math.min(dist, 0.3), 3) * 3,
-            duration: 0.5,
-            ease: "power4.out",
-            overwrite: true
-          });
-        } else {
-          this.pos.aim.x = x;
-          this.pos.aim.y = y;
-          this.size.aim = 1;
-        }
+      moveTo(x,y){
+        if(this.active&&this.target){
+          const rect=this.target.getBoundingClientRect();
+          const cx=rect.x+rect.width/2; const cy=rect.y+rect.height/2;
+          const dx=x-cx; const dy=y-cy;
+          this.pos.aim.x=cx+dx*0.15; this.pos.aim.y=cy+dy*0.15; this.size.aim=2;
+          const angle=Math.atan2(dy,dx)*(180/Math.PI);
+          const dist=Math.sqrt(dx*dx+dy*dy)*0.01;
+          gsap.set(this.node,{rotate:angle});
+          gsap.to(this.node,{scaleX:this.size.aim+Math.pow(Math.min(dist,0.6),3)*3, scaleY:this.size.aim-Math.pow(Math.min(dist,0.3),3)*3, duration:0.5,ease:"power4.out",overwrite:true});
+        } else {this.pos.aim.x=x; this.pos.aim.y=y; this.size.aim=1;}
       }
-
-      update() {
-        this.pos.now.lerp(this.pos.aim, this.pos.ease);
-        this.size.now = gsap.utils.interpolate(this.size.now, this.size.aim, this.size.ease);
-
-        const diff = this.pos.now.clone().sub(this.pos.prev);
-        this.pos.prev.copy(this.pos.now);
-        this.size.prev = this.size.now;
-
-        gsap.set(this.node, {
-          x: this.pos.now.x,
-          y: this.pos.now.y
-        });
-
-        if (!this.active) {
-          const ang = Math.atan2(diff.y, diff.x) * (180 / Math.PI);
-          const dist = Math.sqrt(diff.x ** 2 + diff.y ** 2) * 0.04;
-          gsap.set(this.node, {
-            rotate: ang,
-            scaleX: this.size.now + Math.min(dist, 1),
-            scaleY: this.size.now - Math.min(dist, 0.3)
-          });
+      update(){
+        this.pos.now.lerp(this.pos.aim,this.pos.ease);
+        this.size.now=gsap.utils.interpolate(this.size.now,this.size.aim,this.size.ease);
+        const diff=this.pos.now.clone().sub(this.pos.prev);
+        this.pos.prev.copy(this.pos.now); this.size.prev=this.size.now;
+        gsap.set(this.node,{x:this.pos.now.x,y:this.pos.now.y});
+        if(!this.active){
+          const ang=Math.atan2(diff.y,diff.x)*(180/Math.PI);
+          const dist=Math.sqrt(diff.x**2+diff.y**2)*0.04;
+          gsap.set(this.node,{rotate:ang,scaleX:this.size.now+Math.min(dist,1),scaleY:this.size.now-Math.min(dist,0.3)});
         }
       }
     }
+    const bubbleCursor=new ElasticCursor(document.querySelector(".bubble"));
+    window.addEventListener("mousemove",(e)=>bubbleCursor.moveTo(e.clientX,e.clientY));
+    function frame(){bubbleCursor.update(); requestAnimationFrame(frame);} frame();
 
-    const bubbleCursor = new ElasticCursor(document.querySelector(".bubble"));
-    window.addEventListener("mousemove", (e) => bubbleCursor.moveTo(e.clientX, e.clientY));
-
-    function frame() {
-      bubbleCursor.update();
-      requestAnimationFrame(frame);
-    }
-    frame();
-
-    window.addEventListener("dblclick", () => {
-      document.documentElement.classList.toggle("dark");
-    });
+    // Double click to toggle light mode
+    window.addEventListener("dblclick",()=>{document.documentElement.classList.toggle("light");});
   </script>
 </body>
 </html>
