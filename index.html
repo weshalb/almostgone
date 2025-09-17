@@ -5,156 +5,140 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Almost Gone</title>
   <style>
-    /* RESET */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * {margin:0;padding:0;box-sizing:border-box;}
     body {
-      font-family: 'Inter', sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-      overflow-x: hidden;
-      height: 100vh;
+      font-family:'Inter',sans-serif;
+      background:#0d0d0d;
+      color:#fff;
+      overflow-x:hidden;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a {color:inherit;text-decoration:none;}
 
     /* CURSOR */
     .cursor {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #ff2d55;
-      border-radius: 50%;
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
-      z-index: 9999;
+      width:20px;
+      height:20px;
+      border:2px solid #ff2d55;
+      border-radius:50%;
+      position:fixed;
+      top:0;
+      left:0;
+      pointer-events:none;
+      transform:translate(-50%,-50%);
+      transition:width 0.25s ease,height 0.25s ease,background 0.25s ease;
+      z-index:9999;
     }
     .cursor.grow {
-      width: 50px;
-      height: 50px;
-      background: rgba(255,45,85,0.2);
+      width:50px;
+      height:50px;
+      background:rgba(255,45,85,0.2);
     }
 
     /* HEADER */
     header {
-      width: 100%;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      background: rgba(13,13,13,0.7);
-      backdrop-filter: blur(10px);
+      width:100%;
+      padding:20px 40px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:fixed;
+      top:0;left:0;
+      z-index:1000;
+      background:rgba(13,13,13,0.7);
+      backdrop-filter:blur(10px);
     }
     header h1 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #ff2d55;
+      font-size:1.4rem;
+      font-weight:700;
+      letter-spacing:2px;
+      color:#ff2d55;
     }
     nav a {
-      margin-left: 30px;
-      font-size: 1rem;
-      position: relative;
+      margin-left:30px;
+      font-size:1rem;
+      position:relative;
     }
     nav a::after {
-      content: "";
-      position: absolute;
-      width: 0%;
-      height: 2px;
-      background: #ff2d55;
-      bottom: -5px;
-      left: 0;
-      transition: 0.3s;
+      content:"";
+      position:absolute;
+      width:0%;
+      height:2px;
+      background:#ff2d55;
+      bottom:-5px;left:0;
+      transition:0.3s;
     }
-    nav a:hover::after {
-      width: 100%;
-    }
+    nav a:hover::after {width:100%;}
 
     /* HERO */
     .hero {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      padding: 0 20px;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      text-align:center;
+      padding:0 20px;
     }
     .hero h2 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      animation: fadeInDown 1s ease forwards;
+      font-size:3rem;
+      margin-bottom:20px;
+      animation:fadeInDown 1s ease forwards;
     }
     .hero p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      margin-bottom: 40px;
-      line-height: 1.6;
-      opacity: 0;
-      animation: fadeInUp 1.2s ease forwards;
-      animation-delay: 0.3s;
+      font-size:1.2rem;
+      max-width:600px;
+      margin-bottom:40px;
+      line-height:1.6;
+      opacity:0;
+      animation:fadeInUp 1.2s ease forwards;
+      animation-delay:0.3s;
     }
     .hero button {
-      padding: 14px 28px;
-      border: none;
-      border-radius: 30px;
-      background: #ff2d55;
-      color: #fff;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding:14px 28px;
+      border:none;
+      border-radius:30px;
+      background:#ff2d55;
+      color:#fff;
+      font-size:1rem;
+      cursor:pointer;
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
     }
     .hero button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(255,45,85,0.3);
+      transform:translateY(-3px);
+      box-shadow:0 10px 20px rgba(255,45,85,0.3);
     }
 
     @keyframes fadeInDown {
-      from {opacity: 0; transform: translateY(-30px);}
-      to {opacity: 1; transform: translateY(0);}
+      from {opacity:0; transform:translateY(-30px);}
+      to {opacity:1; transform:translateY(0);}
     }
     @keyframes fadeInUp {
-      from {opacity: 0; transform: translateY(30px);}
-      to {opacity: 1; transform: translateY(0);}
+      from {opacity:0; transform:translateY(30px);}
+      to {opacity:1; transform:translateY(0);}
     }
 
     /* SECTIONS */
-    section {
-      padding: 100px 20px;
-      text-align: center;
-    }
+    section {padding:100px 20px; text-align:center;}
     section h3 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #ff2d55;
+      font-size:2rem;
+      margin-bottom:20px;
+      color:#ff2d55;
     }
     section p {
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      line-height: 1.7;
-      color: #ddd;
+      font-size:1.1rem;
+      max-width:700px;
+      margin:0 auto;
+      line-height:1.7;
+      color:#ddd;
     }
 
     /* FOOTER */
     footer {
-      text-align: center;
-      padding: 40px 20px;
-      background: #111;
-      color: #666;
-      font-size: 0.9rem;
+      text-align:center;
+      padding:40px 20px;
+      background:#111;
+      color:#666;
+      font-size:0.9rem;
     }
   </style>
 </head>
@@ -206,21 +190,58 @@
   </footer>
 
   <script>
-    // Sticky Cursor
     const cursor = document.querySelector('.cursor');
     let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    let targetX = 0, targetY = 0;
+    const speed = 0.15;
+
+    let activeTarget = null;
 
     document.addEventListener('mousemove', e => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      cursor.style.top = mouseY + 'px';
-      cursor.style.left = mouseX + 'px';
+      if (!activeTarget) {
+        targetX = mouseX;
+        targetY = mouseY;
+      }
     });
 
-    // Grow effect on hover
+    function animate() {
+      cursorX += (targetX - cursorX) * speed;
+      cursorY += (targetY - cursorY) * speed;
+      cursor.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px)`;
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Magnetic stick effect
     document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('grow');
+        const rect = el.getBoundingClientRect();
+        activeTarget = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+        targetX = activeTarget.x;
+        targetY = activeTarget.y;
+      });
+      el.addEventListener('mousemove', e => {
+        const rect = el.getBoundingClientRect();
+        activeTarget = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+        targetX = activeTarget.x;
+        targetY = activeTarget.y;
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('grow');
+        activeTarget = null;
+        targetX = mouseX;
+        targetY = mouseY;
+      });
     });
   </script>
 </body>
