@@ -1,247 +1,317 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Almost Gone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú con Cursor Elástico</title>
   <style>
-    * {margin:0;padding:0;box-sizing:border-box;}
+    :root {
+      --background-color-light: hsla(230, 80%, 98%, 1);
+      --toggle-light: hsla(230, 25%, 10%, 1);
+      --line-light: hsla(230, 35%, 92.5%, 1);
+      --dot-light: hsla(230, 25%, 75%, 1);
+      --text-top-light: hsla(240, 25%, 10%, 1);
+      --text-bottom-light: hsla(240, 25%, 25%, 1);
+      --text-circle-light: hsla(240, 25%, 25%, 1);
+      --background-color-dark: hsla(230, 55%, 4%, 1);
+      --toggle-dark: hsla(230, 25%, 75%, 1);
+      --line-dark: hsla(230, 25%, 15%, .75);
+      --dot-dark: hsla(230, 25%, 90%, 1);
+      --text-top-dark: hsla(240, 60%, 90%, 1);
+      --text-bottom-dark: hsla(240, 60%, 95%, 1);
+      --text-circle-dark: hsla(240, 60%, 95%, .15);
+      color-scheme: light;
+      --background-color: var(--background-color-light);
+      --toggle-color: var(--toggle-light);
+      --line-color: var(--line-light);
+      --dot-color: var(--dot-light);
+    }
+
+    html.dark {
+      color-scheme: dark;
+      --background-color: var(--background-color-dark);
+      --toggle-color: var(--toggle-dark);
+      --line-color: var(--line-dark);
+      --dot-color: var(--dot-dark);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+
     body {
-      font-family:'Inter',sans-serif;
-      background:#0d0d0d;
-      color:#fff;
-      overflow-x:hidden;
-    }
-    a {color:inherit;text-decoration:none;}
-
-    /* CURSOR */
-    .cursor {
-      width:20px;
-      height:20px;
-      border:2px solid #ff2d55;
-      border-radius:50%;
-      position:fixed;
-      top:0;
-      left:0;
-      pointer-events:none;
-      transform:translate(-50%,-50%);
-      transition:width 0.25s ease,height 0.25s ease,background 0.25s ease;
-      z-index:9999;
-    }
-    .cursor.grow {
-      width:50px;
-      height:50px;
-      background:rgba(255,45,85,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--background-color);
+      color: var(--toggle-color);
+      cursor: none;
+      font-family: Inter, sans-serif;
+      position: relative;
+      overflow: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* HEADER */
-    header {
-      width:100%;
-      padding:20px 40px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      position:fixed;
-      top:0;left:0;
-      z-index:1000;
-      background:rgba(13,13,13,0.7);
-      backdrop-filter:blur(10px);
-    }
-    header h1 {
-      font-size:1.4rem;
-      font-weight:700;
-      letter-spacing:2px;
-      color:#ff2d55;
-    }
-    nav a {
-      margin-left:30px;
-      font-size:1rem;
-      position:relative;
-    }
-    nav a::after {
-      content:"";
-      position:absolute;
-      width:0%;
-      height:2px;
-      background:#ff2d55;
-      bottom:-5px;left:0;
-      transition:0.3s;
-    }
-    nav a:hover::after {width:100%;}
-
-    /* HERO */
-    .hero {
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
-      text-align:center;
-      padding:0 20px;
-    }
-    .hero h2 {
-      font-size:3rem;
-      margin-bottom:20px;
-      animation:fadeInDown 1s ease forwards;
-    }
-    .hero p {
-      font-size:1.2rem;
-      max-width:600px;
-      margin-bottom:40px;
-      line-height:1.6;
-      opacity:0;
-      animation:fadeInUp 1.2s ease forwards;
-      animation-delay:0.3s;
-    }
-    .hero button {
-      padding:14px 28px;
-      border:none;
-      border-radius:30px;
-      background:#ff2d55;
-      color:#fff;
-      font-size:1rem;
-      cursor:pointer;
-      transition:transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .hero button:hover {
-      transform:translateY(-3px);
-      box-shadow:0 10px 20px rgba(255,45,85,0.3);
+    .grid-frame {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    @keyframes fadeInDown {
-      from {opacity:0; transform:translateY(-30px);}
-      to {opacity:1; transform:translateY(0);}
-    }
-    @keyframes fadeInUp {
-      from {opacity:0; transform:translateY(30px);}
-      to {opacity:1; transform:translateY(0);}
-    }
-
-    /* SECTIONS */
-    section {padding:100px 20px; text-align:center;}
-    section h3 {
-      font-size:2rem;
-      margin-bottom:20px;
-      color:#ff2d55;
-    }
-    section p {
-      font-size:1.1rem;
-      max-width:700px;
-      margin:0 auto;
-      line-height:1.7;
-      color:#ddd;
+    .grid-frame::before,
+    .grid-frame::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background-color: var(--line-color);
     }
 
-    /* FOOTER */
-    footer {
-      text-align:center;
-      padding:40px 20px;
-      background:#111;
-      color:#666;
-      font-size:0.9rem;
+    .grid-frame::before { top: 30%; }
+    .grid-frame::after { bottom: 30%; }
+
+    .grid-frame .vline { position: absolute; top: 0; bottom: 0; width: 1px; background-color: var(--line-color); }
+    .grid-frame .vline.left { left: 30%; } 
+    .grid-frame .vline.right { right: 30%; }
+
+    .dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background-color: var(--dot-color); box-shadow: 0 0 0 3px var(--background-color); z-index: 1; }
+    .dot.tl { top: 29.2%; left: 29.65%; } 
+    .dot.tr { top: 29.2%; right: 29.65%; } 
+    .dot.bl { bottom: 29.2%; left: 29.65%; } 
+    .dot.br { bottom: 29.2%; right: 29.65%; }
+
+    nav { display: flex; gap: 2rem; position: relative; z-index: 2; }
+
+    .icon-btn {
+      --btn-size: 56px;
+      width: var(--btn-size);
+      height: var(--btn-size);
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: transparent;
+      box-shadow: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .icon-btn svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--toggle-color);
+      transition: stroke .14s linear, transform .14s ease;
+    }
+
+    [data-sticky] { position: relative; }
+    [data-sticky] [data-sticky-area] { position: absolute; inset: 0; }
+    [data-sticky]:hover [data-sticky-area] { transform: scale(4); }
+
+    html.dark .icon-btn.is-bubbled svg,
+    html.dark .icon-btn.is-bubbled svg * {
+      stroke: #fff !important;
+      color: #fff !important;
+    }
+    html:not(.dark) .icon-btn.is-bubbled svg,
+    html:not(.dark) .icon-btn.is-bubbled svg * {
+      stroke: #000 !important;
+      color: #000 !important;
+    }
+
+    .bubble {
+      width: var(--bubble-size, 24px);
+      height: var(--bubble-size, 24px);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      mix-blend-mode: difference;
+      pointer-events: none;
+      z-index: 9999;
     }
   </style>
 </head>
 <body>
-  <!-- Cursor -->
-  <div class="cursor"></div>
-
-  <!-- Header -->
-  <header>
-    <h1>ALMOST GONE</h1>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
-
-  <!-- Hero -->
-  <div class="hero">
-    <h2>Welcome to Almost Gone</h2>
-    <p>A modern platform connecting artists, labels, and editors with unique tools to create, share, and grow. Experience music like never before.</p>
-    <button>Get Started</button>
+  <div class="grid-frame">
+    <div class="vline left"></div>
+    <div class="vline right"></div>
+    <div class="dot tl"></div>
+    <div class="dot tr"></div>
+    <div class="dot bl"></div>
+    <div class="dot br"></div>
   </div>
 
-  <!-- About -->
-  <section id="about">
-    <h3>About</h3>
-    <p>Almost Gone is more than just a label. It’s a movement combining music, tech, and culture to empower creators and connect communities worldwide.</p>
-  </section>
+  <nav>
+    <div class="icon-btn" data-sticky>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 3v18l15-9z" stroke="currentColor"></path>
+      </svg>
+      <div data-sticky-area></div>
+    </div>
 
-  <!-- Features -->
-  <section id="features">
-    <h3>Features</h3>
-    <p>• Sticky cursor interactions with smooth animations<br>
-       • Artist & label ecosystem<br>
-       • Viral tools for creators<br>
-       • Built for the future of music</p>
-  </section>
+    <div class="icon-btn" data-sticky>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor"></path>
+        <polyline points="7 10 12 15 17 10" stroke="currentColor"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor"></line>
+      </svg>
+      <div data-sticky-area></div>
+    </div>
 
-  <!-- Contact -->
-  <section id="contact">
-    <h3>Contact</h3>
-    <p>Reach out at <a href="mailto:contact@almostgone.com">contact@almostgone.com</a></p>
-  </section>
+    <div class="icon-btn" data-sticky>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="currentColor"></path>
+        <circle cx="12" cy="13" r="4" stroke="currentColor"></circle>
+      </svg>
+      <div data-sticky-area></div>
+    </div>
 
-  <!-- Footer -->
-  <footer>
-    © 2025 Almost Gone. All rights reserved.
-  </footer>
+    <div class="icon-btn" data-sticky>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18V5l12-2v13" stroke="currentColor"></path>
+        <circle cx="6" cy="18" r="3" stroke="currentColor"></circle>
+        <circle cx="18" cy="16" r="3" stroke="currentColor"></circle>
+      </svg>
+      <div data-sticky-area></div>
+    </div>
 
-  <script>
-    const cursor = document.querySelector('.cursor');
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-    let targetX = 0, targetY = 0;
-    const speed = 0.15;
+    <div class="icon-btn" data-sticky>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"></path>
+        <circle cx="12" cy="7" r="4" stroke="currentColor"></circle>
+      </svg>
+      <div data-sticky-area></div>
+    </div>
+  </nav>
 
-    let activeTarget = null;
+  <div class="bubble"></div>
 
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!activeTarget) {
-        targetX = mouseX;
-        targetY = mouseY;
+  <script type="module">
+    import gsap from "https://esm.sh/gsap";
+    import { vec2 } from "https://esm.sh/vecteur";
+
+    class ElasticCursor {
+      constructor(el) {
+        this.node = el;
+        this.pos = {
+          prev: vec2(-100, -100),
+          now: vec2(-100, -100),
+          aim: vec2(-100, -100),
+          ease: 0.1
+        };
+        this.size = {
+          prev: 1,
+          now: 1,
+          aim: 1,
+          ease: 0.1
+        };
+        this.active = false;
+        this.target = null;
+        this._bindEvents();
       }
-    });
 
-    function animate() {
-      cursorX += (targetX - cursorX) * speed;
-      cursorY += (targetY - cursorY) * speed;
-      cursor.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px)`;
-      requestAnimationFrame(animate);
+      _bindEvents() {
+        gsap.utils.toArray("[data-sticky]").forEach((el) => {
+          const area = el.querySelector("[data-sticky-area]");
+
+          area.addEventListener("pointerover", () => {
+            this.active = true;
+            this.target = area;
+            el.classList.add("is-bubbled");
+          });
+
+          area.addEventListener("pointerout", () => {
+            this.active = false;
+            this.target = null;
+            el.classList.remove("is-bubbled");
+          });
+
+          const moveX = gsap.quickTo(el, "x", { duration: 1, ease: "elastic.out(1, 0.3)" });
+          const moveY = gsap.quickTo(el, "y", { duration: 1, ease: "elastic.out(1, 0.3)" });
+
+          el.addEventListener("pointermove", (ev) => {
+            const { clientX, clientY } = ev;
+            const { width, height, left, top } = el.getBoundingClientRect();
+            const dx = clientX - (left + width / 2);
+            const dy = clientY - (top + height / 2);
+            moveX(dx * 0.2);
+            moveY(dy * 0.2);
+          });
+
+          el.addEventListener("pointerout", () => {
+            moveX(0);
+            moveY(0);
+          });
+        });
+      }
+
+      moveTo(x, y) {
+        if (this.active && this.target) {
+          const rect = this.target.getBoundingClientRect();
+          const cx = rect.x + rect.width / 2;
+          const cy = rect.y + rect.height / 2;
+          const dx = x - cx;
+          const dy = y - cy;
+
+          this.pos.aim.x = cx + dx * 0.15;
+          this.pos.aim.y = cy + dy * 0.15;
+          this.size.aim = 2;
+
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+          const dist = Math.sqrt(dx * dx + dy * dy) * 0.01;
+          gsap.set(this.node, { rotate: angle });
+          gsap.to(this.node, {
+            scaleX: this.size.aim + Math.pow(Math.min(dist, 0.6), 3) * 3,
+            scaleY: this.size.aim - Math.pow(Math.min(dist, 0.3), 3) * 3,
+            duration: 0.5,
+            ease: "power4.out",
+            overwrite: true
+          });
+        } else {
+          this.pos.aim.x = x;
+          this.pos.aim.y = y;
+          this.size.aim = 1;
+        }
+      }
+
+      update() {
+        this.pos.now.lerp(this.pos.aim, this.pos.ease);
+        this.size.now = gsap.utils.interpolate(this.size.now, this.size.aim, this.size.ease);
+
+        const diff = this.pos.now.clone().sub(this.pos.prev);
+        this.pos.prev.copy(this.pos.now);
+        this.size.prev = this.size.now;
+
+        gsap.set(this.node, {
+          x: this.pos.now.x,
+          y: this.pos.now.y
+        });
+
+        if (!this.active) {
+          const ang = Math.atan2(diff.y, diff.x) * (180 / Math.PI);
+          const dist = Math.sqrt(diff.x ** 2 + diff.y ** 2) * 0.04;
+          gsap.set(this.node, {
+            rotate: ang,
+            scaleX: this.size.now + Math.min(dist, 1),
+            scaleY: this.size.now - Math.min(dist, 0.3)
+          });
+        }
+      }
     }
-    animate();
 
-    // Magnetic stick effect
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.classList.add('grow');
-        const rect = el.getBoundingClientRect();
-        activeTarget = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        };
-        targetX = activeTarget.x;
-        targetY = activeTarget.y;
-      });
-      el.addEventListener('mousemove', e => {
-        const rect = el.getBoundingClientRect();
-        activeTarget = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        };
-        targetX = activeTarget.x;
-        targetY = activeTarget.y;
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('grow');
-        activeTarget = null;
-        targetX = mouseX;
-        targetY = mouseY;
-      });
+    const bubbleCursor = new ElasticCursor(document.querySelector(".bubble"));
+    window.addEventListener("mousemove", (e) => bubbleCursor.moveTo(e.clientX, e.clientY));
+
+    function frame() {
+      bubbleCursor.update();
+      requestAnimationFrame(frame);
+    }
+    frame();
+
+    window.addEventListener("dblclick", () => {
+      document.documentElement.classList.toggle("dark");
     });
   </script>
 </body>
